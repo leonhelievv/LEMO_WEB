@@ -7,13 +7,14 @@ console.log('at init Metronome')
 //cleanup nav
 	navPlay.style.display='none';
 	//init spin UI
-	document.getElementById('play').style.display='block';
+	play.style.display='block';
 	currentPlay='LEMO Metronome';
-	document.getElementById('title').innerHTML=currentPlay;
+	//title.innerHTML=currentPlay;
+	title.innerText = currentPlay;
 	playImg.src='metronome.png';
 	motorsDisplay(99) 
 	motorsDisplay(4)
-	document.getElementById('MotorArea').style.display='block';
+	MotorArea.style.display='block';
 	
 	R1.src='start.png'
 	R1.style.display='block'
@@ -28,6 +29,7 @@ console.log('at init Metronome')
 
 function mNomeCleanup() {
 	console.log('at metronome cleanup');
+	R1.removeEventListener('click',mNomeStartStop)
 	//remove stuff
 	sliderArea.style.display = 'none'
 	//restore motors

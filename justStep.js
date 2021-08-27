@@ -27,6 +27,7 @@ function initjuststep() {
 	title.innerHTML=currentPlay;
 	sliderArea.style.display='block';
 	clkwArea.style.display='block';
+	callOut.style.display='none';
 	
 	//build the clkw area "clkwArea"
 	//buildClkwArea()
@@ -54,6 +55,7 @@ function initjuststep() {
 	motorsDisplay(99);
 
 	clkw.src='clkw.png';
+	clkwArea.style.display='block';
 	clkw.style.display='block';
 	clkw.addEventListener('click',clkwClick);
 	

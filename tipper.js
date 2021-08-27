@@ -13,15 +13,21 @@ function initTipper() {
 console.log('at init tipper')
 //cleanup nav
 	navPlay.style.display='none';
+	clkwArea.style.display='none';
 	//init spin UI
 	play.style.display='block';
 	currentPlay='LEMO Tipper';
 	title.innerHTML=currentPlay;
 	playImg.src='tipper_up.png';
 	playIcon.style.display='block';
-	buildCallOut()
-	instruct = document.getElementById('instruct')
+	//buildCallOut()
+	callOut.style.display='block';
+	instruct.style.color='black';
+	instrHead.style.color='yellow';
+	instrHead.style.font='bold';
+	//instruct = document.getElementById('instruct')
 	instruct.innerText='Assign motor as tip sensor.';
+	motors.style.display='block';
 	motorsDisplay(99)
 	motorsDisplay(4)
 	L1.src='clkw.png'
@@ -40,14 +46,15 @@ function tipperCleanup() {
 	console.log('at tipper cleanup');
 	L1.removeEventListener('click',tipper_clkw)
 	R1.removeEventListener('click',tipper_Aclkw)
-	R3.removeEventListener('click',tipper_tool)
-	free_F_motors(currentPlay);
-	free_S_motors(currentPlay);
+	R3.removeEventListener('click',tipper_tool)	
 	//restore motors
 	motorsDisplay(99)
 	//remove the instruction area
-	var co = document.getElementById('callOut')
-	co.remove();
+	//var co = document.getElementById('callOut')
+	callOut.style.display = 'none'
+	//co.remove();
+	free_F_motors(currentPlay);
+	free_S_motors(currentPlay);
 	audio.src=''
 	
 };
@@ -110,7 +117,8 @@ function tipper_load_SB_buffer_tip_cmnd() {
 function tipper_respons_handler(respons) {
 	
 	if (tipper_phase==1) {
-		if (respons[3]==5 || tipper_respons_list[3]==0) {
+		//if (respons[3]==5 || tipper_respons_list[3]==0) {
+		if (respons[3]==5 || respons[3]==0) {
 			websocket.send(':'+tipper_sensor_device+'/'+currentPlay+'/182/;')
 			tipper_p2_format()
 		}

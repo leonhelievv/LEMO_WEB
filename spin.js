@@ -12,6 +12,7 @@ function initSpin() {
 	currentPlay='LEMO Spin';
 	title.innerHTML='LEMO Spin';
 	playImg.src='spin.png';
+	callOut.style.display='none';
 		
 	sliderArea.style.display='block';
 	R1.src='start.png';
@@ -37,8 +38,8 @@ function initSpin() {
 	function spinCleanup() {
 	console.log('at just step cleanup');
   	sliderArea.style.display='none';
-	//clkw.style.display='none';
-	clkw.remove();
+	clkw.style.display='none';
+	//clkw.remove();
 	clkw.removeEventListener('click',doSpinClkw);
 	L1.style.display='none';
 	L2.style.display='none';

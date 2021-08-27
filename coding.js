@@ -11,6 +11,7 @@ console.log('at init coding')
 	playR.style.display='none';
 	playIcon.style.display='none';
 	clkwArea.style.display='none';
+	callOut.style.display='none';
 	document.getElementById('pzzl').style.display='block';
 	currentPlay='LEMO Coding';
 	title.innerHTML = currentPlay;

@@ -3,12 +3,13 @@ console.log('at init knock off')
 //cleanup nav
 	navPlay.style.display='none';
 	//init spin UI
-	document.getElementById('play').style.display='block';
+	play.style.display='block';
+	clkwArea.style.display='none';
 	currentPlay='LEMO knock off';
-	document.getElementById('title').innerHTML=currentPlay;
+	title.innerHTML=currentPlay;
 	playImg.src='knock_off.png';	
-	buildCallOut()
-	instruct = document.getElementById('instruct')
+	//buildCallOut()
+	callOut.style.display = 'block'
 	instruct.innerText='??????.';
 	instruct.style.backgroundColor='#0eeb49'
 }
@@ -19,8 +20,10 @@ function knockOffCleanup() {
 	//restore motors
 	motorsDisplay(99)
 	//remove the instruction area
-	var co = document.getElementById('callOut')
+	//var co = document.getElementById('callOut')
 	//L1.removeEventListener('click',)	
-	co.remove();
+	//co.remove();
+	callOut.style.display = 'none'
 	initNav();	
 };
+

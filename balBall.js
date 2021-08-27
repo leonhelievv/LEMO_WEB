@@ -7,6 +7,7 @@ function initBalBall() {
 	console.log('at ballance init ball ');
 	//cleanup nav
 	navPlay.style.display='none';
+	clkwArea.style.display='none';
 	
 	currentPlay='LEMO balance ball';
 	playImg.src='balance_ball.png';
@@ -28,11 +29,15 @@ function initBalBall() {
 	R2.addEventListener('click',balance_ball_ok)
 	
 	//build instruction area
-	buildCallOut()
-	instruct = document.getElementById('instruct')
-	instruct.innerText='Set your balance beam level.';
+	//buildCallOut()
+	callOut.style.display = 'block'
+	instruct.style.display = 'block'
+	instruct.style.fontSize = '50px'
+	instruct.style.color = 'black'
+	instruct.innerText='Set your balance beam level.'
 	instruct.style.backgroundColor='#ebe134'
 	//prepare motors
+	motors.style.display='block'
 	motorsDisplay(99)
 	motorsDisplay(1)
 };
@@ -41,9 +46,10 @@ function balBallCleanup() {
 	console.log('at ballance ball cleanup');
 	//restore motors
 	motorsDisplay(99)
-	//remove the instruction area
-	var co = document.getElementById('callOut')
-	co.remove();
+	//mute instruction area
+	//var co = document.getElementById('callOut')
+	//co.remove();
+	callOut.style.display = 'none'
 	free_S_motors('LEMO balance ball');
 	L1.removeEventListener('click',balance_ball_left_down);
 	R1.removeEventListener('click',balance_ball_right_down);
