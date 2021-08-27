@@ -297,7 +297,7 @@
 <!-- navigation area -->
  	<div id="nav" style="display: block; padding-left: 20%; overflow: scroll; max-height: 92%">		
  	</div>
- 
+ 	
 <!-----------the play area------------>
  		<div id="play" style="display: none; height: 80%">
 		<!--Slider arae -->
@@ -318,9 +318,14 @@
  			<div id='playCol' class="column" style="">
 			<!-- things in the column  -->
 				<p id="clkwArea"><img id="clkw" src="" style="height: 350px; width: 350px; margin-left: 60px"></p>
+				<div id="callOut" class="callout-left full" style="max-width: 500px">
+					<h3 id="instrHead" style="font-size: 50px; color: yellow;">Instruction !</h3>
+					<p id="instruct" style="font-size: 48px; color: white; font-weight: bold;"></p>
+				</div>
 				<p id="playIcon" style="display: block; width: 600px" >
  				<img id="playImg" src="justStep.png" class="disabledrag" style="width:90%">
 				</p>
+				
 				
 		<!-- this is also in the play column -->	
 		<!-- the puzzel section start -->
@@ -377,7 +382,10 @@
  			<img id="S2" src="yellow_motor_off.png" class="motors">
   		</div>
 		</div>
- 
+		
+		<!-- help videos area -->
+ 		<iframe id="helpVc" src="" style="display: none; width:100%; height: 80%"></iframe>
+ 	
 		<div id="ToyBoxArea" class="toyBoxSection" style="height:8%; padding-top: 2%">
  			<img id="toyBox" src="toy_box.png" alt="Snow" class="disabledrag" style=" width:12%;max-width:300px">  
  		</div>
@@ -442,7 +450,8 @@ function globalVars() {
 	
 	//var clkw=document.getElementById('clkw');
 	window.clkw = document.getElementById('clkw');
-	window.callOut
+	window.callOut = document.getElementById('callOut');
+	window.instruct = document.getElementById('instruct');
 	window.spd=document.getElementById('spd');
 	window.sliderArea=document.getElementById('sliderArea');
 
@@ -456,6 +465,8 @@ function globalVars() {
 	
 	window.joystkCanvas=document.getElementById('joystkCanvas');
 	window.joyOptionInput=document.getElementById('optionInput');
+	
+	window.helpVc=document.getElementById('helpVc');
 
 	window.navIcons = [
 'coding.png',
@@ -473,6 +484,7 @@ function globalVars() {
 'LEMOMan.png',
 'snail.png',
 'whistle_walk.png',
+'help_videos.png',
 ]
 };
 
@@ -497,6 +509,7 @@ document.getElementById('metronome').addEventListener('click',initMnome);
 document.getElementById('snail').addEventListener('click',initSnail);    
 document.getElementById('knock_off').addEventListener('click',initKnockOff);    
 document.getElementById('coding').addEventListener('click',initCoding);    
+document.getElementById('help_videos').addEventListener('click',initHelpVideos);    
 //var play = location.search.substring(1).split("&");
 //console.log('<<<< play >>>> '+play);
 showNav();
@@ -608,12 +621,11 @@ function getWindowSize() {
 getWindowSize();
 
 //---------web socket stuff -------
-//var gateway = `wss://${window.location.hostname}/wss`;
-  //var gateway = `wss://192.168.1.145/wss`;
-//var gateway = `wss://192.168.1.22:443/wss`;
-//var gateway = `wss://192.168.1.22:81/wss`;
-var gateway = `wss://192.168.1.22:443/wss`;
-var websocket;
+//var gateway = `ws://${window.location.hostname}/ws`;
+  //var gateway = `ws://192.168.1.145/ws`;
+  var gateway = `ws://192.168.1.22:443/ws`;
+  //var gateway = `wss://192.168.1.22:443/wss`;
+  var websocket;
   
   window.addEventListener('load', onLoad);
   
@@ -667,7 +679,7 @@ function voiceCmnd() {
 if ("webkitSpeechRecognition" in window) {
 
   // Speech Recognition Stuff goes here
-  alert("Speech Recognition is Available")
+  //alert("Speech Recognition is Available")
 
 } else {
   alert("Speech Recognition Not Available")
@@ -683,7 +695,7 @@ if ("webkitSpeechRecognition" in window) {
             
   // This runs when the speech recognition service starts
  	recognition.onstart = function() {
- 	alert('recognition has started')
+ 	//alert('recognition has started')
  		//handle per play
      	var play = document.getElementById('title').innerHTML;
        if (play=='LEMO Spin') {spinVstart() //handle event voice rec start for spin
@@ -745,7 +757,7 @@ if ("webkitSpeechRecognition" in window) {
  };
  
  function exitHandler() {
- var lastPlay = document.getElementById('title').innerHTML;
+ var lastPlay = title.innerHTML;
  if (lastPlay == 'LEMO just step') {
  	justStepCleanup();
  	}else if (lastPlay=='LEMO Spin') {
@@ -770,6 +782,8 @@ if ("webkitSpeechRecognition" in window) {
 	knockOffCleanup();
 	}else if (lastPlay=='LEMO Coding') {
 	codingCleanup();
+	}else if (lastPlay=='LEMO help') {
+	cleanupHelpVideos();
 	}
 	showNav();
  };
@@ -782,6 +796,28 @@ if ("webkitSpeechRecognition" in window) {
   } else if (elem.msRequestFullscreen) { /* IE11 */
     elem.msRequestFullscreen();
   }
+}
+
+function initHelpVideos() {
+	title.innerHTML = "LEMO help"
+	helpVc.src="https://www.youtube.com/embed/videoseries?list=PL6uxVEPQvG2HuN9TcUvbAvep54FJJ1dca";
+	helpVc.style.display = 'block';
+	play.style.display = 'block';
+	iconArea.style.display = 'none';
+	motors.style.display = 'none';
+	playL.style.display = 'none';
+	playR.style.display = 'none';
+	nav.style.display = 'none';
+}
+
+function cleanupHelpVideos() {
+	helpVc.src= "";
+	helpVc.style.display = 'none';
+	iconArea.style.display = 'block';
+	motors.style.display = 'block';
+	playL.style.display = 'block';
+	playR.style.display = 'block';
+	nav.style.display = 'block';
 }
  
   function isMobileDevice() {
