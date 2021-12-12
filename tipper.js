@@ -35,6 +35,7 @@ console.log('at init tipper')
 	L1.addEventListener('click',tipper_clkw)
 	R1.src='aclkw.png'
 	R1.style.display='none'
+	R2.style.display='none'
 	R1.addEventListener('click',tipper_Aclkw)
 	R3.src='tool.png'
 	R3.style.display='none'
@@ -55,28 +56,29 @@ function tipperCleanup() {
 	//co.remove();
 	free_F_motors(currentPlay);
 	free_S_motors(currentPlay);
+	//free the SBnr BUFFERS
+	free_SBnR(currentPlay)
 	audio.src=''
-	
 };
 
 function tipper_clkw() {
 	if (tipper_phase==3) {
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+201+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+201+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
 		R3.style.display='block'
 	}else if (tipper_phase==4) {
 		tipper_count=tipper_count+1
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+201+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+201+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
 		R3.style.display='block'
 	}
 };
 
 function tipper_Aclkw() {
 	if (tipper_phase==3) {
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+200+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+200+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
 		R3.style.display='block'
 	}else if (tipper_phase==4) {
 		tipper_count=tipper_count-1
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+200+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+200+'/'+tipper_step_speed+'/'+tipper_step_size+'/;');
 		R3.style.display='block'
 	}
 };
@@ -111,7 +113,7 @@ function tipper_load_SB_buffer_tip_cmnd() {
 	var aCmnd=(tipper_sensor_device=='FA') ? ':SB1R/':':SB2R/';
 	var s = tipper_count*tipper_step_size
 	var allCmnd = aCmnd+currentPlay+'/500/,'+deviceSelected+'/'+currentPlay+'/'+tip_cmnd+'/100/'+s+'/;'
-	websocket.send(allCmnd)
+	appCmndToLemo(allCmnd)
 };
 
 function tipper_respons_handler(respons) {
@@ -119,7 +121,7 @@ function tipper_respons_handler(respons) {
 	if (tipper_phase==1) {
 		//if (respons[3]==5 || tipper_respons_list[3]==0) {
 		if (respons[3]==5 || respons[3]==0) {
-			websocket.send(':'+tipper_sensor_device+'/'+currentPlay+'/182/;')
+			appCmndToLemo(':'+tipper_sensor_device+'/'+currentPlay+'/182/;')
 			tipper_p2_format()
 		}
 	}else if (tipper_phase==3) {
@@ -136,7 +138,7 @@ function tipper_respons_handler(respons) {
 	}else if (tipper_phase==6) {
 		if (respons.includes('rest')) {
 			const c = tipper_count*tipper_step_size
-			websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+tip_reset_cmnd+'/100/'+c+'/;')
+			appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+tip_reset_cmnd+'/100/'+c+'/;')
 			tipper_phase=7
 		}
 	}else if (tipper_phase==7) {
@@ -202,14 +204,14 @@ function tipper_handle_buttons(button_clicked) {
 function tiper_sensor_FA_click() {
 	if (tipper_phase==1) {
 		tipper_sensor_device='FA'
-		websocket.send(':'+tipper_sensor_device+'/'+currentPlay+'/199/;');
+		appCmndToLemo(':'+tipper_sensor_device+'/'+currentPlay+'/199/;');
 	}
 };
 
 function tiper_sensor_FB_click() {
 	if (tipper_phase==1) {
 		tipper_sensor_device='FB'
-		websocket.send(':'+tipper_sensor_device+'/'+currentPlay+'/199/;');
+		appCmndToLemo(':'+tipper_sensor_device+'/'+currentPlay+'/199/;');
 	}
 };
 

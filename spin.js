@@ -85,13 +85,13 @@ function initSpin() {
   if (R1.src.includes("start")) {
   	R1.src = "stop.png";
   	playImg.src='spin.gif';
-  	websocket.send(':'+deviceSelected+'/'+owner+'/'+cmnd+'/'+spd.value+cmndEnd);
+  	appCmndToLemo(':'+deviceSelected+'/'+owner+'/'+cmnd+'/'+spd.value+cmndEnd);
   	msg ='stops the selected motor';
   	//console.log('arrived here set to stop');
   }else {
   	R1.src = "start.png";
   	playImg.src='spin.png';
-  	websocket.send(':'+deviceSelected+'/'+owner+'/199/;');
+  	appCmndToLemo(':'+deviceSelected+'/'+owner+'/199/;');
   }
   if (FvoiceCmnd!=true){spinSpeak(msg)}
   };

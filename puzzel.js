@@ -5,6 +5,7 @@
    var pzlOptionDialog
    var pzlInDialog = 'none'
    var pzzlPieces=[]
+   const pzlEventListeners = [] //childId,eventType,aditionalParam-phrase
    var pzzlpNo=0
    var touchMove = false
    var downX
@@ -172,6 +173,7 @@ function placeOrNot(hereIsThis,hereIndex,touchX,touchY) {
 	var doDeletedUpdate = false
 	const pzlHeight = hereIsThis[13]
 	var blkMatch = [,,,,'none']
+	var isChild = 'notChild'
 
 	if (hereIsThis != 'noThing') {
 		//there is a pzzl at this spot	
@@ -307,44 +309,43 @@ function placeOrNot(hereIsThis,hereIndex,touchX,touchY) {
 					} else {
 					//delay blk option is not open
 					console.log('switchBlock option is full, can not place option')
-					}//end	\
-											
-				}
-			
+					}//end	\										
+				}		
 			} else {
 			//new pzl, selected pzzl is not an option blk
 			const nextResult = whatsHereTouch(touchX,touchY+pzlHeight)		
-			const nextDown = nextResult[0]		
-			if (nextDown == 'noThing') {
+			const nextDown = nextResult[0]
+			if (hereIsThis[21] == 'switchBlock') {
+				//	hereIs a type switchBlock
+				//hereIsThis is a switch block - check if inside is open
+				if (!Number.isInteger(hereIsThis[18])) {
+					//the switchBlk inside is open Number.isInteger(hereIsThis[17])
+					place=true
+					xOfnew=blkMatch[1]
+					yOfnew=blkMatch[2]
+					isChild='isChild'
+				}
+			}							
+			if (place == false && nextDown == 'noThing') {	
 				//next position down is open
 				//place the blk
 				place=true		
 				xOfnew=blkMatch[1]
-				yOfnew=blkMatch[2]
-				
+				yOfnew=blkMatch[2]				
 				//if hereIsThis has deleted bottom
 				if (!Number.isInteger(hereIsThis[16])) {
 					if (hereIsThis[16].includes('deleted')) {
-					//the hereIsThis blk has a deleted bottom - restore links
-					doDeletedUpdate = true	
+						//the hereIsThis blk has a deleted bottom - restore links
+						doDeletedUpdate = true	
 					}				
 				}				
-				}else {
-					//next position down is full except it is a switch blk
-					if (hereIsThis[21] == 'switchBlock') {
-						//hereIsThis is a switch block - check if inside is open
-						if (!Number.isInteger(hereIsThis[18])) {
-							//the switchBlk inside is open Number.isInteger(hereIsThis[17])
-							place=true
-							xOfnew=blkMatch[1]
-							yOfnew=blkMatch[2]
-						}
-					}else {
-					console.log('next position down is full')
-				}		
-				}
-		}	
-		}
+
+			}else {
+				console.log('next position down is full or placed inside')
+			}		
+		}		
+	}
+			
 	
 	} else {
 		//there is nothing here
@@ -401,7 +402,7 @@ function placeOrNot(hereIsThis,hereIndex,touchX,touchY) {
 			pzzlpNo+=1
 			//build the new puzzle and store in pzlPieces
 			const soManyPzls = pzzlPieces.length
-			pzzlPieces[soManyPzls] = selectedPuzzel.slice(0) //make ne pzl
+			pzzlPieces[soManyPzls] = selectedPuzzel.slice(0) //make new pzl
 			pzzlPieces[soManyPzls][1] = pzzlpNo //new pzl id
 			//mod the pzl x y
 			pzzlPieces[soManyPzls][7] = xOfnew
@@ -410,9 +411,14 @@ function placeOrNot(hereIsThis,hereIndex,touchX,touchY) {
 			pzzlPieces[soManyPzls][2] = newDrawing.slice(0)
 			//record links to in new pzl
 			pzzlPieces[soManyPzls][20] = hereIsThis[1]
+			//clone the [24] array
+			pzzlPieces[soManyPzls][24] = selectedPuzzel[24].slice(0)
 			//record links to in parent
 			hereIsThis[16+option]= pzzlpNo
 			drawPzzl(pzzlPieces[soManyPzls],false,false,pzlCtx)	//already saved, not highlight
+			//record that it is a child
+			pzzlPieces[soManyPzls][24][0] = isChild
+			pzzlPieces[soManyPzls][24][1] = hereIsThis[1]
 			//test if new block is inside switch
 			if (blkMatch[4].includes('switch')) {
 				//the blkMatch returned - it is a block inside switch - record the link
@@ -446,19 +452,40 @@ function buildMenu() {
 }
 
 function codingVresult(transcript,confidence) {
-	//handles the event voice recognition recieved result
-	console.log('at coding voice cmnd handler')
-	// if transcrip includes the phrase in the cmnd - continue the run
-	//what is the current cmnd
-	const nowCmndIndex = executionProgress[1]
-	const nowCmnd = cmndSequince[nowCmndIndex]
-	const lookFor = nowCmnd[1]
-	if (transcript.includes(lookFor)) {
-		//the transcript includes the phrase looking for
-		executionProgress[1] += 1
-		//stop listening
-		recognition.stop();
-		continueProgram()
+	var resultHandled = false
+	//handles the event voice recognition recieved result	
+	//cycle through list of eventListeners - look if phrase match
+	//is there an event listener waiting for this phrase?
+	//const eventListener = pzlEventListeners.find(element => element[1] == transcript);
+	//const eventListener = pzlEventListeners.find(element => transcript.includes(element[2]));
+	//loop to find element in array
+	
+	const arrayLength = pzlEventListeners.length;
+	for (var i = 0; i < arrayLength; i++) {
+    //test if phrase is in transcript
+    if (transcript.includes(pzlEventListeners[i][2])) {
+    	//the transcrip includes phrase
+    	// notify loop that the condition is satisfied loop must brake
+    	pzzlPieces[pzlEventListeners[i][0]][24][3] = 'break'
+    	//remove eventListener from array
+    	pzlEventListeners.splice(i,1)
+    	resultHandled = true
+    	break
+    }
+	}
+	if (!resultHandled) {
+		//the event is 
+		//what is the current cmnd
+		const nowCmndIndex = executionProgress[1]
+		const nowCmnd = cmndSequince[nowCmndIndex]
+		const lookFor = nowCmnd[1]
+		if (transcript.includes(lookFor)) {
+			//the transcript includes the phrase looking for
+			executionProgress[1] += 1
+			//stop listening
+			recognition.stop();
+			continueProgram()
+		}
 	}	
 }
 

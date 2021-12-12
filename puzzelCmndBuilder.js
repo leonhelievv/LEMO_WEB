@@ -36,17 +36,19 @@ if (Number.isInteger(linkToBottom)) {
 			//this is the blk connected to the bottom
 			cmndBlock = pzzlPieces[i]
 			if (!cmndBlock[21].includes('savedProgram')) {
-			//the block is not a program name block
-			//build the cmnd for this blk 
-			cmndString = buildCmnd(cmndBlock)
-			
-			//store in the current array
-				if (cmndString.includes('name')) {
-					//the cmnd is the program name				
-					cmndSeq[sqIndex]=cmndString
-				}else {
-					sqIndex += 1
-					cmndSeq[sqIndex]=cmndString
+				//the block is not a program name block
+				if (cmndBlock[24][0] == 'notChild') {
+					//the blk is not a child		
+					//build the cmnd for this blk 
+					cmndString = buildCmnd(cmndBlock)		
+					//store in the current array
+					if (cmndString.includes('name')) {
+						//the cmnd is the program name				
+						cmndSeq[sqIndex]=cmndString
+					}else {
+						sqIndex += 1
+						cmndSeq[sqIndex]=cmndString
+					}
 				}
 			
 			}else {
@@ -112,6 +114,8 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 	//make list of index's of pzls connected to the cmndBlock
 	findLinkedpzlsIndex(cmndBlock)
 	
+	//is this blk inside a nother?
+	
 	if (cmndBlock[3].includes('motor')) {
 	//this Block is a motor block
 		//are all option for motor blocks in place
@@ -151,46 +155,60 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 				//the mode is spin
 				var speed = pzzlPieces[listLinkIndexs[2]][15] //flip here
 				var clkw = pzzlPieces[listLinkIndexs[3]][15]	//flip here	
-				cmnd = 'stored,'+cmndBufferIndex	
-				deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+clkw+'/'+speed+'/;'
+				//cmnd = 'stored,'+cmndBufferIndex	
+				cmnd = cmndPart1+owner+'/'+clkw+'/'+speed+'/;'
+				//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+clkw+'/'+speed+'/;'
+				deviceCmndBuffer[cmndBufferIndex][1] = cmnd
 			}else if (modeOrDgrs=='Shake') {
-				//mode is shake 
-				cmnd = 'stored,'+cmndBufferIndex
-				//get the cmnd code from puzzelResorce, fMotorModes
+				//mode is shake
 				const cmndCode = fMotorModes[1][1]
+				//cmnd = 'stored,'+cmndBufferIndex
+				cmnd = cmndPart1+owner+'/'+cmndCode+'/;'
+				//get the cmnd code from puzzelResorce, fMotorModes				
 				//remember the cmnd
-				deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				deviceCmndBuffer[cmndBufferIndex][1] = cmnd
 			}else if (modeOrDgrs=='Metronome') {
 				//mode is metronome
-				cmnd = 'stored,'+cmndBufferIndex
-				var speed = pzzlPieces[listLinkIndexs[2]][15]
 				//get the cmnd code from puzzelResorce, fMotorModes
 				const cmndCode = fMotorModes[2][1]
+				var speed = pzzlPieces[listLinkIndexs[2]][15]
+				//cmnd = 'stored,'+cmndBufferIndex
+				cmnd = cmndPart1+owner+'/'+cmndCode+'/'+speed+'/;'	
 				//remember the cmnd
-				deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/'+speed+'/;'
+				//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/'+speed+'/;'
+				deviceCmndBuffer[cmndBufferIndex][1] = cmnd
 			}else if (modeOrDgrs=='Sensor0') {
 				//mode is sensor0
-				cmnd = 'stored,'+cmndBufferIndex
 				//get the cmnd code from puzzelResorce, fMotorModes
 				const cmndCode = fMotorModes[3][1]
+				//cmnd = 'stored,'+cmndBufferIndex
+				cmnd = cmndPart1+owner+'/'+cmndCode+'/;'				
 				//remember the cmnd
-				deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				deviceCmndBuffer[cmndBufferIndex][1] = cmnd
 			}else if (modeOrDgrs=='Sensor1') {
-				cmnd = 'stored,'+cmndBufferIndex
 				//get the cmnd code from puzzelResorce, fMotorModes
 				const cmndCode = fMotorModes[4][1]
+				//cmnd = 'stored,'+cmndBufferIndex
+				cmnd = cmndPart1+owner+'/'+cmndCode+'/;'				
 				//remember the cmnd
-				deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+cmndCode+'/;'
+				deviceCmndBuffer[cmndBufferIndex][1] = cmnd
 			}
 
 	}else{
 		//it is a S type motor
 		//note the options are no longer the same as for f motor - change them
-		cmnd = 'stored,'+cmndBufferIndex
+		//cmnd = 'stored,'+cmndBufferIndex
+		
 		const Ssteps = pzzlPieces[listLinkIndexs[1]][15]
 		speed = pzzlPieces[listLinkIndexs[2]][15]
-		clkw = pzzlPieces[listLinkIndexs[3]][15]		
-		deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+clkw+'/'+speed+'/'+Ssteps+'/;'
+		clkw = pzzlPieces[listLinkIndexs[3]][15]
+		cmnd = cmndPart1+owner+'/'+clkw+'/'+speed+'/'+Ssteps+'/;'
+		//deviceCmndBuffer[cmndBufferIndex][1] = cmndPart1+owner+'/'+clkw+'/'+speed+'/'+Ssteps+'/;'
+		deviceCmndBuffer[cmndBufferIndex][1] = cmnd
+		
 		}
 	}
 }else if (cmndBlock[3]=='START') {
@@ -283,13 +301,13 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 	cmnd = cmndBlock[3]
 	console.log(' the cmnd is '+cmnd)
 }else if (cmndBlock[3].includes('Sound')) {
-	//is the option delay supplied?
+	//is the option sound supplied?
 	if (listLinkIndexs[1] != 'none') {
 		const dialogValue = pzzlPieces[listLinkIndexs[1]][15]
 		//get the sound file from lemoSounds - use dialogValue
 		const findI = (element) => element[0] == dialogValue	
 		const inD = lemoSounds.findIndex(findI)	
-		cmnd = 'sound,'+lemoSounds[inD][1]
+		cmnd = ['sound',lemoSounds[inD][1]]
 	} else {
 		//option is not supplied - return error
 		drawSymbol(specs)	
@@ -337,6 +355,7 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 		drawSymbol(specs)
 		cmnd = 'error,noName'
 	}
+		
 }else if (cmndBlock[3].includes('light')) {
 		//are all options for this light block are in place
 		var lightFullCmnd
@@ -373,6 +392,47 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 		//load cmnd in cmnd buffer
 		deviceCmndBuffer[cmndBufferIndex][1] = lightFullCmnd
 	}
+	
+}else if (cmndBlock[3]=='loop') {
+	//it is a loop block
+	//is the loop label supplied?
+	if (listLinkIndexs[1] != 'none') {
+		//there is a option block 
+		//get the label
+		const loopLabel = parseInt(pzzlPieces[listLinkIndexs[1]][15])
+		cmnd = ['loop',loopLabel]
+	}else {
+		//there is no option blk
+		//mark block with red X
+		drawSymbol(specs)
+		//return error
+		cmnd = 'error no loop label'
+	}
+}else if (cmndBlock[3]=='loopBrakeTest') {
+	//it is a loop break block
+	//is the option delay supplied?
+	if (listLinkIndexs[1] != 'none') {
+		//there is a option block 
+		//get the label
+		const loopLabel = parseInt(pzzlPieces[listLinkIndexs[1]][15])
+		//does it have a child
+		if (Number.isInteger(cmndBlock[18])) {
+			//there is a child inside		
+			cmnd = ['loopBreak',loopLabel,cmndBlock[18]]
+		}else {
+			//there is no child blk
+			//place red X on blk
+			drawSymbol(specs)
+			//return error
+			cmnd = 'error,no child blk'
+		}
+	}else {
+		//there is no option blk
+		//mark block with red X
+		drawSymbol(specs)
+		//return error
+		cmnd = 'error no delay'
+	}
 }
 	//this function is inside buildCmnd
 	function findLinkedpzlsIndex(thisPzl) {
@@ -383,14 +443,14 @@ var specs = [drawing,'rgb(207, 14, 0)','rgb(112, 22, 16)']
 		const pzlR3 = 19
 		const pzlBottom = 16
 		for (let pI = 0; pI < 5; pI++){
-		//loop 5 times for 5 possible pzl connections
-		listLinkIndexs[pI] = 'none'
-		var lookFor = thisPzl[16+pI]
-		for (let i = 0; i < pzzlPieces.length; i++){
-			//loop through all the puzzels look for the pzl id 'lookFor'
-			if (pzzlPieces[i][1] == lookFor) {	
-			//this is the blk looked for
-			 listLinkIndexs[pI] = i
+			//loop 5 times for 5 possible pzl connections
+			listLinkIndexs[pI] = 'none'
+			var lookFor = thisPzl[16+pI]
+			for (let i = 0; i < pzzlPieces.length; i++){
+				//loop through all the puzzels look for the pzl id 'lookFor'
+				if (pzzlPieces[i][1] == lookFor) {	
+				//this is the blk looked for
+			 	listLinkIndexs[pI] = i
 			 break	
 			}
 		}	
@@ -446,21 +506,21 @@ function continueProgram() {
 	//const theProgram = cmndSequinces[executionProgress[0]]
 	const noOfCmnds = cmndSequince.length
 	while (executionProgress[1] < noOfCmnds) {
-		//there is another cmnd to send
+		//there is another cmnd to handle
 	var nextCmnd = cmndSequince[executionProgress[1]]
 	if (Array.isArray(nextCmnd)) {
 		//the cmnd is an array - it has option block(s)
-			if (nextCmnd[0] == 'delay') {
-				//the cmnd is a delay
-				var delay = nextCmnd[1] * 1000
-				//execute the delay cmnd
-				console.log('at start the delay timer '+delay)
-				// increment the executionProgress [1]
-				executionProgress[1] += 1
-				//set delay timer
-				//setTimeout(function(){ alert("Hello"); }, 3000);
-				setTimeout(function(){ continueProgram(); }, delay);
-				break
+		if (nextCmnd[0] == 'delay') {
+			//the cmnd is a delay
+			var delay = nextCmnd[1] * 1000
+			//execute the delay cmnd
+			console.log('at start the delay timer '+delay)
+			// increment the executionProgress [1]
+			executionProgress[1] += 1
+			//set delay timer
+			//setTimeout(function(){ alert("Hello"); }, 3000);
+			const pzlDelay = setTimeout(function(){ continueProgram(); }, delay);
+			break
 		} else if (nextCmnd[0] == 'voice') {
 			//the cmnd is a voice cmnd
 			//get the prhase
@@ -470,14 +530,15 @@ function continueProgram() {
 			//set up the voice recognition handler for coding
 			break
 		} else if (nextCmnd[0] == 'SensorFA') {
+			//the cmnd is a sensor FA - stop until sensor is trigered
 			const sensCmnd = 180 + nextCmnd[1]
 			//send the cmnd - assign FA as triger
 			fullCmnd = ':FA/'+owner+'/'+sensCmnd+'/;'
 			//fullCmnd = ':FA/'+owner+'/182/;'
-			websocket.send(fullCmnd);
+			appCmndToLemo(fullCmnd);
 			//send the cmnd to store in the triger buffer - request info FA status
 			//:SB1R/LEMO Coding/500/,S1/LEMO Tipper/201/100/50/;
-			fullCmnd = ':SB1R/LEMO Coding/500/,FA/LEMO Coding/300/;'			websocket.send(fullCmnd);
+			fullCmnd = ':SB1R/LEMO Coding/500/,FA/LEMO Coding/300/;'			appCmndToLemo(fullCmnd);
 			// raise the flag Coding waiting for respons
 			codingWaitRespons[0] = true
 			codingWaitRespons[1] = 'FA'
@@ -486,20 +547,20 @@ function continueProgram() {
 			//it is a FA sensor block - stop until sensor is trigered
 			break		
 		}else if (nextCmnd[0] == 'SensorFB') {
-			//it is a FB sensor block - stop until sensor is trigered
+			//it is a FB sensor cmnd - stop until sensor is trigered
 			const sensCmnd = 180 + nextCmnd[1]
 			//send the cmnd - assign FA as triger
 			fullCmnd = ':FB/'+owner+'/'+sensCmnd+'/;'
-			websocket.send(fullCmnd);
+			appCmndToLemo(fullCmnd);
 			//send the cmnd to store in the triger buffer - request info FA status
-			fullCmnd = ':SB2R/LEMO Coding/500/,FB/LEMO Coding/300/;'			websocket.send(fullCmnd);
+			fullCmnd = ':SB2R/LEMO Coding/500/,FB/LEMO Coding/300/;'			appCmndToLemo(fullCmnd);
 			// raise the flag Coding waiting for respons
 			codingWaitRespons[0] = true
 			codingWaitRespons[1] = 'FB'
 			// increment the executionProgress [1]
 			executionProgress[1] += 1			
 			break		
-		}else if (nextCmnd[1].includes('Sound')) {
+		}else if (nextCmnd[0].includes('sound')) {
 			//it is a sound cmnd
 			console.log('cmnd is play sound - do only when next cmnd is start')
 		}else if (nextCmnd[0].includes('switch')) {
@@ -516,26 +577,117 @@ function continueProgram() {
 				if (uBli == null) {
 				//there is no button with this id
 				makeBtn(pzlInside,nextCmnd)
-			}
-				
-				//const pzlSwitch = document.getElementById('switchStart')
-				//pzlSwitch.style.display = 'block'
-				//pzlSwitch.style.width = 200+'px'
-				//pzlSwitch.addEventListener('onmousedown',switchRun)
-				//pzlSwitch.addEventListener('onmousedown', function() {switchRun(nextCmnd, pzlSwitch);});				
-				//pzlSwitch.addEventListener('onmousedown', function() {
-				//	switchRun(pzl1,pzl2);
-				//	});
-				//pzlSwitch.addEventListener('onclick',switchRun())
-				//pzlSwitch.onmousedown = 'switchRun()'
-				
+			}		
 			}else{
 				//there is no valid pzl on the inside
 				console.log('it is a switchBlk but no valid pzl on the inside')
 			}
+		}else if (nextCmnd[0].includes('loopBreak')) {
+			//it is a loopBrakeTest cmnd
+			//is the loop already running
+			if (nextCmnd[3] == 'running') {
+				//the loop is already running
+				const childIndex = getConnectedPzl(nextCmnd[2])
+				//if break condition is delay - test for timeUp
+				if (pzzlPieces[childIndex][3] == 'Delay') {
+					//the break condition is delay					
+					//get the delayUpTime in eventListeners
+					//const breakTime = pzlEventListeners[eL][2]
+					//get the break time in child [24][4]
+					const breakTime = pzzlPieces[childIndex][24][4]
+					//test for timeUp
+					const d = new Date();
+					const nowMs = d.valueOf()
+					if (nowMs >= breakTime) {
+						//the time is up - break the loop
+						//mark the loopBreak cmnd as done
+						nextCmnd[3] = 'done'
+						//reset the start point of loop
+						nextCmnd[4] = 'none'					
+						//clear triger from pzlEventListeners					
+						const listennerIndex = 	pzzlPieces[childIndex][24][2]
+						pzlEventListeners.splice(listennerIndex,1)			
+					}else {
+						//the time is not up do another loop
+						//do another loop - set execution progress to start of loop
+						executionProgress[1] = nextCmnd[4]
+					}
+				}else{
+					//the break condition is not delay
+					//test for other break - it is recorded in child				
+					const isBreak = pzzlPieces[childIndex][24][3]
+					if (isBreak != 'break') {
+						//the break condition is not satisfied
+						//do another loop - set execution progress to start of loop
+						executionProgress[1] = nextCmnd[4]
+					}else {
+						//loop brake condition is satisfied
+						//remember to set loop pass count to 0 if break satisfied
+						//mark the loopBreak cmnd as done
+						nextCmnd[3] = 'done'
+						//reset the start point of loop
+						nextCmnd[4] = 'none'					
+						//cancel the trigger
+						if (pzzlPieces[childIndex][3] == 'Wait for voice command') {
+							//the child used in loop break test is a wait for voice cmnd
+							//turn off listening
+							recognition.stop();
+							//clear triger from pzlEventListeners					
+							const listennerIndex = 	pzzlPieces[childIndex][24][2]
+							pzlEventListeners.splice(listennerIndex,1)	
+						}else if (pzzlPieces[childIndex][3] == 'another trigger') {
+							//turn off the trigger
+						}
+					//reset the child [24] array
+					pzzlPieces[childIndex][24] = switchBlkTemplate[24].slice(0)
+						
+				}
+				}
+				
+				}else{
+					//the loop is not running
+					//is there a matching child on inside
+					const childInside = nextCmnd[2]
+					if (Number.isInteger(childInside)) {
+						//there is a matchin child on inside
+						//is there a matching loop cmnd before				
+						//search for matching loop cmnd
+						var loopMatchIndex = -1
+						for (let i = 1; i < executionProgress[1] ; i++) {
+  							if (Array.isArray(cmndSequince[i])) {
+  							//the cmnd is an array
+  							if (cmndSequince[i][0] == "loop" && cmndSequince[i][1] == nextCmnd[1]) {
+  								//it is the matching loop
+  								loopMatchIndex = i
+  								break //stop the search - found the matching loop
+  							}						
+  						}
+					}
+				if (loopMatchIndex != -1) {
+					//there is a matching loop cmnd before this loopBrakeCmnd
+					console.log('found a valid loop ')
+					//get the child pzl
+					const theChild = getConnectedPzl(childInside)
+					if (pzzlPieces[theChild][24][2] == 0) {						
+						//setup the eventListener as per child block
+						const made = makeEventListener(theChild)
+						if (made) {
+						//init the loop pass count
+						pzzlPieces[theChild][24][2] = 0
+						//mark the loopBreak cmnd as running
+						nextCmnd[3] = 'running'
+						//record the start point of loop
+						nextCmnd[4] = loopMatchIndex
+						//re direct execution to start of loop
+						executionProgress[1] = loopMatchIndex
+						}								
+					}								
+				}
+			}
 		}
+	}
 	}else{
-		//the cmnd has no option blocks		
+		//the cmnd is not array - has no option blocks		
 		//if prevCmnd is valid send via websocket	
 		var prevCmnd		
 		//what was the previous cmnd		
@@ -545,31 +697,38 @@ function continueProgram() {
 			if (noOfCmnds > 1) {
 				//there is a prevCmnmd
 				prevCmnd = cmndSequince[executionProgress[1]-1]				
-				if (prevCmnd.includes('stored')) {
-					//the previous cmnd was stored for execution					
-					const sA = prevCmnd.split(',')
-					const buffIndex = sA[1]
+				//if (prevCmnd.includes('stored')) {
+				if (!Array.isArray(prevCmnd)) {
+					//the previous cmnd is not an array
+					if (prevCmnd.charAt(0) == ':' && prevCmnd.slice(-1) == ';') {
+						//the previous cmnd is a valid cmnd				
+						//const sA = prevCmnd.split(',')
+						//const buffIndex = sA[1]
 			   		//get stored by index  and send the stored cmnd
-			   		prevCmnd = deviceCmndBuffer[buffIndex][1]
-						websocket.send(prevCmnd);
-						console.log('send the cmnd simulation '+prevCmnd)					
-				}else if (prevCmnd.includes('device')) {
-					//it is a valid device id
-					//get the current cmnd for the device in the cmnd buffer
-					//get index
-					const bufIndex = prevCmnd.slice(0,1)
-					const curentCmnd = deviceCmndBuffer[bufIndex-1][1]
-					websocket.send(curentCmnd);
-				}else if (prevCmnd.includes('sound')){
+			   		//prevCmnd = deviceCmndBuffer[buffIndex][1]
+						appCmndToLemo(prevCmnd);
+						console.log('send the cmnd simulation '+prevCmnd)
+					}else if (prevCmnd.includes('device')) {
+						//it is a valid device id
+						//get the current cmnd for the device in the cmnd buffer
+						//get index
+						const bufIndex = prevCmnd.slice(0,1)
+						const curentCmnd = deviceCmndBuffer[bufIndex-1][1]
+						appCmndToLemo(curentCmnd);
+					}
+				}else {
+					//the previous cmnd is an array
+					if (prevCmnd.includes('sound')){
 					//it is a sound cmnd
 					//get the sound required - entered by the user
-					const theFileName = prevCmnd.split(',')[1]
+					const theFileName = prevCmnd[1]
 					//function checkInclude(fileName) { return fileName.includes(theSoundName) }
 					//const theFileName = lemoSounds.find(checkInclude)
 					//now instruct user device to play the sound
 					audio.src=theFileName //'truck_beep.mp3'
 					audio.play(); 
 				}
+				}						
 			}		
 		}else if (nextCmnd == 'stop') {
 			//the next cmnd is a stop cmnd - what must be stopped?
@@ -582,21 +741,21 @@ function continueProgram() {
 					const dvI = prevCmnd.split(' ')
 					const devName = dvI[1] //:FA/
 					fullCmnd = devName+owner+'/199/;'
-					websocket.send(fullCmnd);
+					appCmndToLemo(fullCmnd);
 				}else if (prevCmnd.includes('stored')) {
 					//prevCmnd is stored cmnd
 					const stored = prevCmnd.split(',')
 					const sI = stored[1]
 					const devName = deviceCmndBuffer[sI][0] //FA
 					fullCmnd = ':'+devName+'/'+owner+'/199/;'
-					websocket.send(fullCmnd);
+					appCmndToLemo(fullCmnd);
 				}		
 				const devName = prevCmnd.slice(0, 4)
 				if (devName.includes('F') || devName.includes('S')) {
 					//the prev cmnd is valid device						
 					//construct stop cmnd :S1/LEMO Spin/199/;
 					fullCmnd = devName+owner+'/199/;'
-					websocket.send(fullCmnd);
+					appCmndToLemo(fullCmnd);
 					console.log('the stop cmnd '+fullCmnd)						
 				}
 				
@@ -684,7 +843,76 @@ function switchRun(a,b) {
 	//get the device name in pzl that is inside
 	
 	//fullCmnd = devName+owner+'/199/;'
-	//websocket.send(fullCmnd);
+	//appCmndToLemo(fullCmnd);
+}
+
+function makeEventListener(child) {
+	var listenerMade = false
+	const lI = pzlEventListeners.length
+	const optionBlk = pzzlPieces.find(element => element[1] == pzzlPieces[child][17]);
+	//get child option block ,get value
+	if (pzzlPieces[child][3] == 'Wait for voice command') {
+		//the child is a voice cmnd block
+		console.log('the child is a voice cmnd block')
+		//get the phrase to wait for from the child option block
+		//get optionBlk
+		//const optionBlk = pzzlPieces.find(element => element[1] == pzzlPieces[child][17]);
+		const phrase = optionBlk[15]
+		//make entry into eventlistener list
+		//const lI = pzlEventListeners.length
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],phrase]
+		//start listening
+		voiceCmnd()
+		listenerMade = true
+	}else if (pzzlPieces[child][3] == 'Delay') {
+		//the child is delay
+		//get the parent - to flag the loop to break
+		const loopBreakBlk = pzzlPieces.find(element => element[1] == pzzlPieces[child][24][1]);
+		//get the delay and convert to milliSeconds
+		const delay = parseInt(optionBlk[15])*1000
+		//calc infuture
+		const d = new Date()
+		const inFuture = d.valueOf()+delay
+		//make entry into eventlistener list
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],inFuture]
+		//record timeUp in child [24][4]
+		pzzlPieces[child][24][4] = inFuture
+		listenerMade = true
+		
+	}else if (pzzlPieces[child][3] == 'SensorFA') {
+		//the child is sensor FA
+		//get the sensor mode
+		const mode = parseInt(optionBlk[15])+180
+		const fullCmnd = ':FA/LEMO Coding/'+mode+'/;'
+		appCmndToLemo(fullCmnd);
+		//load the trigger buffer with cmnd ???? :SB1R/LEMO Tipper/500/,S1/LEMO Tipper/201/100/90/;
+		//load the trigger buffer with cmnd ???? 
+		appCmndToLemo(':SB1R/LEMO Coding/500/,FA/LEMO coding/300/;');
+		//example respons :FA/LEMO Coding/300/12/0/85/1//;		
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],':FA/LEMO Coding/300/'] 
+		listenerMade = true	
+	}else if (pzzlPieces[child][3] == 'SensorFB') {
+		//the child is Ssensor FB
+		//get the sensor mode
+		const mode = parseInt(optionBlk[15])+180
+		const fullCmnd = ':FB/LEMO Coding/'+mode+'/;'
+		appCmndToLemo(fullCmnd);
+		//load the trigger buffer with cmnd 300		
+		appCmndToLemo(':SB2R/LEMO Coding/500/,FB/LEMO coding/300/;');
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],'']
+		listenerMade = true	
+	}else if (pzzlPieces[child][3] == 'S1wait') {
+		//the child is S1Wait - wait for S1 to stop
+		//const lI = pzlEventListeners.length
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],'S1,LEMO Coding,rest']
+		listenerMade = true	
+	}else if (pzzlPieces[child][3] == 'S2wait') {
+		//the child is SensorFx
+		//const lI = pzlEventListeners.length
+		pzlEventListeners[lI] = [child,pzzlPieces[child][3],'S2']
+		listenerMade = true
+	}
+	return listenerMade
 }
 
 

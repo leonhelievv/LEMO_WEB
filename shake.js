@@ -23,8 +23,8 @@ function shakeCleanup() {
 	console.log('at shake cleanup');	
 	//restore motors
 	motorsDisplay(99)
-	websocket.send(':FA/'+currentPlay+'/199/;');
-	websocket.send(':FB/'+currentPlay+'/199/;');
+	appCmndToLemo(':FA/'+currentPlay+'/199/;');
+	appCmndToLemo(':FB/'+currentPlay+'/199/;');
 	free_F_motors(currentPlay);
 	clearTimeout(shakeTime);
 	R1.removeEventListener('click',shakeStartStop)	
@@ -61,12 +61,12 @@ function shakeIcon() {
 
 function shakeStartStop() {
 	if (R1.src.includes('start')) {
-	websocket.send(':'+deviceSelected+'/'+currentPlay+'/102/;');
+	appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/102/;');
 	R1.src='stop.png'
 	playImg.src='shakeLeft.png'
 	shakeTime=setTimeout(shakeIcon, 100)
 }else{
-	websocket.send(':'+deviceSelected+'/'+currentPlay+'/199/;');
+	appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/199/;');
 	R1.src='start.png'
 	clearTimeout(shakeTime);
 	playImg.src='LEMOMan.png'

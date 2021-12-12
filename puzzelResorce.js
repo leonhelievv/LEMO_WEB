@@ -33,7 +33,7 @@ beginBlock, 			//0 'puzzelName',pzzl raw data
 'beginBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'no inside',				//24
+['no inside','none',0],//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -84,7 +84,7 @@ motorBlock, 			//0 'puzzelName',
 ['cmndPart1','cmndPart2','cmndPart3','cmndPart4','/;'], //22
 //'motorMode',
 'image File Name', 		//23
-'no inside',				//24
+['no inside','none',0], //24
 'motor state',				//25
 'uniquePzlName'			//26
 ]
@@ -126,7 +126,7 @@ startStopBlock, 			//0 'puzzelName',
 'startStopBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'no inside',				//24
+['no inside','none',0,'none'],	//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -171,7 +171,7 @@ delayBlock, 			//0 'puzzelName',
 'delayBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'no inside',				//24
+['no inside','none',0],//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -201,7 +201,7 @@ delayBlock, 			//0 'puzzelName',
 'nameBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'no inside',					//24
+['no inside','none',0],//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -244,7 +244,7 @@ optionBlock, 			//0 'puzzelName',
 'optionBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'no inside',					//24
+['no inside','none',0],//24
 '',							//25
 'uniquePzlName'			//26
 ]	
@@ -275,7 +275,7 @@ startStopBlock, 			//0 'puzzelName',
 'motorSelect',				//21
 'not used',					//22
 'image file name', 		//23
-'no inside',				//24
+['no inside','none',0],//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -332,7 +332,7 @@ switchBlock, 			//0 'puzzelName',
 'switchBlock',				//21
 'not used',					//22
 'image file name - not used', //23
-'inside',			//24
+['parent','none',0,'noloop'],	//24
 '',							//25
 'uniquePzlName'			//26
 ]
@@ -578,6 +578,27 @@ const menuItemsSpecs = [
 /*6*/'rgb(255, 252, 168)',
 /*7*/'Enter the light number',
 /*8*/lightSelect
+],
+['loop',
+/*1*/nameBlkTemplate,
+/*2*/delayBlock,
+/*3*/'loop',
+/*4*/'rgb(255, 255, 255)',
+/*5*/'rgb(0, 0, 0)',
+/*6*/'rgb(124, 102, 138)',
+/*7*/'Label the loop',
+/*8*/'no img'
+],
+['loopBrakeTest',
+/*1*/switchBlkTemplate,
+/*2*/switchBlock,
+/*3*/'loopBrakeTest',
+/*4*/'rgb(255, 255, 255)',
+/*5*/'rgb(0, 0, 0)',
+/*6*/'rgb(124, 102, 138)',
+/*7*/'loop name',
+/*8*/'no img',
+/*9*/['x1',146,'x2',226],
 ],
 ] //end of puzzel specifications
 

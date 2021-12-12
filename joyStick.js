@@ -138,8 +138,8 @@ const joyRmotor = document.getElementById('rightMotor')
             //joystick(width / 2, height / 3);
             joystick(width / 2, height / 4);
             //send stop cmnd
-            websocket.send(':S1/LEMO joystick/199/;'); 
-            websocket.send(':S2/LEMO joystick/199/;');
+            appCmndToLemo(':S1/LEMO joystick/199/;'); 
+            appCmndToLemo(':S2/LEMO joystick/199/;');
             motorsDisplay(3);
         }
 
@@ -249,8 +249,8 @@ const joyRmotor = document.getElementById('rightMotor')
    			mSpdR=Math.trunc(mapSpeed*diffs);
    		}
    	}
-   	websocket.send(':S1/LEMO joystick/'+Lcmnd+'/'+mSpdL+'/999/;');  
-   	websocket.send(':S2/LEMO joystick/'+Rcmnd+'/'+mSpdR+'/999/;');
+   	appCmndToLemo(':S1/LEMO joystick/'+Lcmnd+'/'+mSpdL+'/999/;');  
+   	appCmndToLemo(':S2/LEMO joystick/'+Rcmnd+'/'+mSpdR+'/999/;');
    	//update GUI mpotors
    	motorsDisplay(2);
    	console.log('cmnd was sent xxx > '+mSpdL+' R > '+mSpdR);

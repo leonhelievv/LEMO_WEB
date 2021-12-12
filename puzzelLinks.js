@@ -134,29 +134,36 @@ function replaceUpdate(replacement) {
 		const RX = replacement[7] + replacement[12] + optionBlkTemplate[12] / 2
 		var RY = replacement[8] + mblkOpOffsets[1] + optionBlkTemplate[13]/2
 		hereIs = whatsHereTouch(RX,RY)
-		if (hereIs[0][21].includes('option')) {
-			//there is an option blk in R1 - update link data	
-			replacement[17] = hereIs[0][1]	
-			hereIs[0][20] = replacement[1]
-			hereIs[0][17] = 1
-		}
+		if (hereIs[0] != 'noThing') {
+			//there is an option blk
+			if (hereIs[0][21].includes('option')) {
+				//there is an option blk in R1 - update link data	
+				replacement[17] = hereIs[0][1]	
+				hereIs[0][20] = replacement[1]
+				hereIs[0][17] = 1
+			}
+		} 
 		
 		RY = replacement[8] + mblkOpOffsets[2] + optionBlkTemplate[13]/2
 		hereIs = whatsHereTouch(RX,RY)
-		if (hereIs[0][21].includes('option')) {
-			//there is an option blk in R2
-			replacement[18] = hereIs[0][1]	
-			hereIs[0][20] = replacement[1]
-			hereIs[0][17] = 2
+		if (hereIs[0] != 'noThing') {
+			if (hereIs[0][21].includes('option')) {
+				//there is an option blk in R2
+				replacement[18] = hereIs[0][1]	
+				hereIs[0][20] = replacement[1]
+				hereIs[0][17] = 2
+			}
 		}
 		
 		RY = replacement[8] + mblkOpOffsets[3] + optionBlkTemplate[13]/2
 		hereIs = whatsHereTouch(RX,RY)
-		if (hereIs[0][21].includes('option')) {
-			//there is an option blk in R3
-			replacement[19] = hereIs[0][1]	
-			hereIs[0][20] = replacement[1]
-			hereIs[0][17] = 3
+		if (hereIs[0] != 'noThing') {
+			if (hereIs[0][21].includes('option')) {
+				//there is an option blk in R3
+				replacement[19] = hereIs[0][1]	
+				hereIs[0][20] = replacement[1]
+				hereIs[0][17] = 3
+			}
 		}
 		
 	}else if (replacement[21].includes('delay')) {

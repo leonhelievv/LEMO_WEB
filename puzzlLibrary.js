@@ -159,7 +159,7 @@ function whatsHereTouch(touchX,touchY) {
 			console.log('there is a pzl at touch id is no:'+pzzl_id)
 			whatsHere = [pzzlPieces[i],i]
 			//refine the search for whatsHere - if pzzl is combined (pzzl inside)
-			if (!thisPiece[24].includes('no')) {
+			if (thisPiece[24][0] == 'parent') {
 				//the pzzl may have another inside
 				console.log('pzzl may have an inside pzzl')
 				if (Number.isInteger(thisPiece[18])) {
@@ -365,20 +365,6 @@ function makeOptionsList(theList) {
 		listContainer.insertAdjacentHTML('afterbegin', item);
 	}
 	listContainer.style.display = 'block'
-}
-
-function coding_respons_handler(respons) { // (respons_list)
-	console.log('respons received for coding ' +respons)
-	if (respons.includes('sensor') && codingWaitRespons[0] == true) {
-		//it is a sensor respons - continue program
-		continueProgram()
-	}else if (respons.includes('rest') && codingWaitRespons[0] == true) {
-		//it is a stepper rest respons
-		if (respons[0].includes(codingWaitRespons[1])) {
-			//the one waiting for is the same as respons
-			continueProgram()
-		}
-	}
 }
 
 var buttonCount = 0

@@ -113,7 +113,7 @@ function slider_event_handler() {
 		}
 		cmnd_rec = ':'+deviceSelected+'/'+title.innerHTML+'/'+jsClkw+'/'+just_step_spead+cmnd_part2;
 		//send the cmnd
-		websocket.send(cmnd_rec);
+		appCmndToLemo(cmnd_rec);
 		if (just_step_rec==true) {
 			if (js_time_stamp_previous==0) {
 				js_time_stamp_previous=Date.now();
@@ -148,7 +148,7 @@ function slider_event_handler() {
 					cmnd_part2='/999/;'
 					}
 			cmnd_rec = ':'+deviceSelected+'/'+title.innerHTML+'/'+jsClkw+'/'+just_step_spead+cmnd_part2;
-			websocket.send(cmnd_rec);
+			appCmndToLemo(cmnd_rec);
 			if (just_step_rec==true) {
 			if (js_time_stamp_previous==0) {
 				js_time_stamp_previous=Date.now();
@@ -181,7 +181,7 @@ function slider_event_handler() {
 			if (item_play_back.charAt(0)==':' && item_play_back.charAt(item_play_back.length==';')) {				
 				//test if interval is not an illegal number
 				if (!isNaN(interval)) {
-					websocket.send(item_play_back);
+					appCmndToLemo(item_play_back);
 					//update GUI
 					js_gui_format_playBack(stop_cmnd,item_play_back);
 					//increment index
@@ -278,7 +278,7 @@ function slider_event_handler() {
 	};
 	
 	function just_step_r1() {
-		//websocket.send('at just step r1');
+		
 		var jsStop = ':'+deviceSelected+'/'+title.innerHTML+'/199/;';
 		if (justStep_rec_phase==1) {
 			js_time_stamp_previous=0;
@@ -290,7 +290,7 @@ function slider_event_handler() {
 				just_step_rec_sq1.push(Date.now()-js_time_stamp_previous);
 				just_step_rec_sq1.push(jsStop);
 				just_step_rec_sq1.push(0);
-				websocket.send(jsStop);
+				appCmndToLemo(jsStop);
 				js_p3_setup();
 			}
 		}else if (justStep_rec_phase==3) {
@@ -303,7 +303,7 @@ function slider_event_handler() {
 			just_step_play_no=0;
 			//tmrId=window.setTimeout(just_step_play_back_interval(), 10);
 			clearTimeout(tmrId);
-			websocket.send(jsStop);
+			appCmndToLemo(jsStop);
 		}
 	};
 	
@@ -426,10 +426,10 @@ function slider_event_handler() {
   	if (justStep_rec_phase==1 || justStep_rec_phase==3) {
   		if (L1.src.includes('step_not_stand.png')) {
   			L1.src='stand_not_step.png';
-  			websocket.send(jsStop);
+  			appCmndToLemo(jsStop);
   		}else {
   			L1.src='step_not_stand.png';
-  			websocket.send(fullCmnd);
+  			appCmndToLemo(fullCmnd);
   		}
   	}else if(justStep_rec_phase==2){
   		if (L1.src.includes('step_not_stand.png')) {
@@ -440,7 +440,7 @@ function slider_event_handler() {
   				just_step_rec_sq1.push(Date.now()-js_time_stamp_previous);
   				just_step_rec_sq1.push(jsStop);
   			}
-  			websocket.send(jsStop);
+  			appCmndToLemo(jsStop);
   			js_time_stamp_previous=Date.now();
   		}else {
   			L1.src='step_not_stand.png';
@@ -450,7 +450,7 @@ function slider_event_handler() {
   				just_step_rec_sq1.push(Date.now()-js_time_stamp_previous);
   				just_step_rec_sq1.push(fullCmnd);
   			}
-  			websocket.send(fullCmnd);
+  			appCmndToLemo(fullCmnd);
   			js_time_stamp_previous=Date.now();	
   		}
   	}
@@ -461,16 +461,17 @@ function slider_event_handler() {
   	var rl0 = respons_list[0];
   	var rl2=respons_list[2];
   	if (respons_list.length==9 && rl2==300) {
-  		js_gui_format(respons_list); 		
-  		if (rl0==':FA') {
-  			motorHandler(1,false,false);
-  		}else if (rl0==':FB'){
-  			motorHandler(2,false,false);
-  		}else if (rl0==':S1') {
-  			motorHandler(3,false,false);
-  		}else if (rl0==':S2') {
-  			motorHandler(4,false,false);
-  		}
+  		js_gui_format(respons_list);
+  		//the motor buttons are changed by motors.js, motorHandler	
+//  		if (rl0==':FA') {
+  			//motorHandler(1,false,false);
+//  		}else if (rl0==':FB'){
+  			//motorHandler(2,false,false);
+// 		}else if (rl0==':S1') {
+  			//motorHandler(3,false,false);
+//  		}else if (rl0==':S2') {
+  			//motorHandler(4,false,false);
+//  		}
   	}else if (respons_list.length==4 && rl2=='rest') {
   		if (rl0.includes(deviceSelected)) {
   			L1.src='stand_not_step.png';
@@ -525,4 +526,11 @@ function  jStepVresult() {
 
 function jStepVend() {
 	//handles the event voice recognition stopped
+}
+
+function justStepMotorHandler(deviceSelected){
+	Flag_js_GUI_update = 2;
+	awaitRespons = true;
+	const fullCmnd = ':'+deviceSelected+'/'+currentPlay+'/300/;'
+	appCmndToLemo(fullCmnd);
 }

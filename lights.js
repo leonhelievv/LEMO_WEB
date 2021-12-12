@@ -137,7 +137,7 @@ function blinkSpd() {
 	var l = light_current+1
 	//issue new cmnd to ajust the speed
 	full_cmnd=':S2/LEMO lights/'+cm+'/'+l+'/'+lights_state[light_current][2]+'/'+lights_state[light_current][4]+'/;'
-	websocket.send(full_cmnd);	
+	appCmndToLemo(full_cmnd);	
 	}
 };
 
@@ -157,7 +157,7 @@ function blinkClick() {
 		//send off cmnd
 		var l = light_current+1
 		full_cmnd=':S2/LEMO lights/'+600+'/'+l+'/;'
-		websocket.send(full_cmnd);
+		appCmndToLemo(full_cmnd);
 	
 	}else{
 		R3.src='blink.png';
@@ -172,7 +172,7 @@ function blinkClick() {
 		var l = light_current+1
 		if (lights_state[light_current][3]) {cm=604}
 		full_cmnd=':S2/LEMO lights/'+cm+'/'+l+'/'+lights_state[light_current][2]+'/'+lights_state[light_current][4]+'/;'
-		websocket.send(full_cmnd);	
+		appCmndToLemo(full_cmnd);	
 	}		
 };
 
@@ -190,7 +190,7 @@ function blinkMode() {
 	}
 	//send cmnd
 	full_cmnd=':S2/LEMO lights/'+cm+'/'+l+'/'+lights_state[light_current][2]+'/'+lights_state[light_current][4]+'/;'
-	websocket.send(full_cmnd);	
+	appCmndToLemo(full_cmnd);	
 };
 
 
@@ -280,7 +280,7 @@ function lights_on_off() {
 	var l = light_current+1
 	lights_state[light_current][0]=newState
 	full_cmnd=':S2/LEMO lights/'+cmnd+'/'+l+'/;'
-	websocket.send(full_cmnd);
+	appCmndToLemo(full_cmnd);
 };
 
 function lights_blink() {
@@ -303,7 +303,7 @@ function lights_blink() {
 	
 	//pulse width not yet implemented
 	//fullCmnd=cmndPart1+cmnd+'/'+l+'/'+dl+'/'+pw+'/;'
-	//websocket.send(full_cmnd);
+	//appCmndToLemo(full_cmnd);
 	//recording not yet implemented
 };
 

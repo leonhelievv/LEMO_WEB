@@ -33,8 +33,8 @@ function mNomeCleanup() {
 	//remove stuff
 	sliderArea.style.display = 'none'
 	//restore motors
-	websocket.send(':FA/'+currentPlay+'/199/;');
-	websocket.send(':FB/'+currentPlay+'/199/;');
+	appCmndToLemo(':FA/'+currentPlay+'/199/;');
+	appCmndToLemo(':FB/'+currentPlay+'/199/;');
 	free_F_motors(currentPlay);
 	motorsDisplay(99)
 	clearTimeout(mNomeT);
@@ -46,12 +46,12 @@ function mNomeStartStop() {
 	mNomeSpd=scale(spd.value, 100, 1000, 1000, 100)
 	var mNomeEnd='/;'
 	if (R1.src.includes('start')) {
-		websocket.send(mNomeP1+mNomeCmnd+mNomeSpd+mNomeEnd)
+		appCmndToLemo(mNomeP1+mNomeCmnd+mNomeSpd+mNomeEnd)
 		R1.src='stop.png'
 		playImg.src='mNomeL.png'
 		mNomeT=setTimeout(mNomeSwing, mNomeSpd)
 	}else {
-		websocket.send(mNomeP1+'199/;')
+		appCmndToLemo(mNomeP1+'199/;')
 		R1.src='start.png'
 		clearTimeout(mNomeT);
 	}
@@ -65,7 +65,7 @@ function mNome_respons_handler(respons) {
 		R1.src='stop.png'
 		playImg.src='mNomeL.png'
 		//ask for the pulse rate set MNomeSpd
-			websocket.send(':'+deviceSelected+'/'+title.innerHTML+'/302/;')	
+			appCmndToLemo(':'+deviceSelected+'/'+title.innerHTML+'/302/;')	
 				
 	}else if (respons[3]==5) {
 		clearTimeout(mNomeT);
@@ -96,7 +96,7 @@ function mNomeSpeed() {
 			mNomeSpd=scale(spd.value, 100, 1000, 1000, 100)
 			console.log('2 the mapped value > '+mNomeSpd)
 			//send new cmnd
-			websocket.send(mNomeP1+mNomeCmnd+mNomeSpd+mNomeEnd)
+			appCmndToLemo(mNomeP1+mNomeCmnd+mNomeSpd+mNomeEnd)
 		}else{
 			// do nothing
 		}

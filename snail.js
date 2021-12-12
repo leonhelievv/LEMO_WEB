@@ -38,19 +38,19 @@ function initSnail() {
 	iconArea.innerHTML='<canvas id="snailCanvas" name="snail" style="display: block; width: 100%; height: 100%"></canvas>'
 	
 	//is the device a mobile
-	deviceIsMobile = isMobileDevice()
+//	deviceIsMobile = isMobileDevice()
 	//document.getElementById('debug').innerText=' mobile ? '+deviceIsMobile
 	
-	if (!deviceIsMobile) {	
+//	if (!deviceIsMobile) {	
 	//set eventlistener for canvas
-	snailCanvas.addEventListener('mousedown',glicDown)
-	snailCanvas.addEventListener('mousemove',glicMove)
-	snailCanvas.addEventListener('mouseup',glicUp)
-	}else {
+//	snailCanvas.addEventListener('mousedown',glicDown)
+//	snailCanvas.addEventListener('mousemove',glicMove)
+//	snailCanvas.addEventListener('mouseup',glicUp)
+//	}else {
 	snailCanvas.addEventListener('touchstart',glicDown)
 	snailCanvas.addEventListener('touchmove',glicMove)
 	snailCanvas.addEventListener('touchend',glicUp)
-	}
+//	}
 	
 };
 
@@ -58,23 +58,23 @@ function snailCleanup() {
 	//console.log('at snail cleanup');
 	clearTimeout(snailT);
 	//clear eventlistener for canvas
-	if (!deviceIsMobile) {
+//	if (!deviceIsMobile) {
 	snailCanvas.removeEventListener('mousedown',glicDown)
 	snailCanvas.removeEventListener('mousemove',glicMove)
 	snailCanvas.removeEventListener('mouseup',glicUp)
-	}else {
+//	}else {
 	snailCanvas.removeEventListener('touchstart',glicDown)
 	snailCanvas.removeEventListener('touchmove',glicMove)
 	snailCanvas.removeEventListener('touchend',glicUp)
-	}
+//	}
 	
 	//restore play area
 	play.innerHTML=restorePlayArea
 	globalVars()	
 	document.getElementById('toyBox').addEventListener('click',exitHandler);  
 	//stop motors
-	websocket.send(':FA/'+currentPlay+'/199/;');
-	websocket.send(':FB/'+currentPlay+'/199/;');
+	appCmndToLemo(':FA/'+currentPlay+'/199/;');
+	appCmndToLemo(':FB/'+currentPlay+'/199/;');
 	free_F_motors(currentPlay);
 	free_S_motors(currentPlay);
 	motorsDisplay(99)
@@ -145,12 +145,12 @@ function doSnailT() {
 		cmnd+=1
 		snailLeft=false
 		snailImg='snail_right.png'
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);	
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);	
 	}else if (snailX==200) {
 		//turnaround and decrement
 		snailLeft=true
 		snailImg='snail_left.png'
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);
+		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);
 	}
 	}
 	//test if garlic in snail path
@@ -173,7 +173,7 @@ function doSnailT() {
 				snailImg='snail_right.png'
 				cmnd+=1
 				snailLeft=false
-				websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);	
+				appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);	
 			}
 		}
 	}else {
@@ -184,7 +184,7 @@ function doSnailT() {
 				//turn around go left
 				snailLeft=true
 				snailImg='snail_left.png'
-				websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);
+				appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+cmnd+'/5'+cmndEnd);
 			}
 		}
 	}
@@ -210,7 +210,7 @@ function glicDown(xyStart) {
 	const cw = parseInt(document.getElementById('IconArea').style.width.replace(/px$/, ''))
 	const ch = parseInt(document.getElementById('IconArea').style.height.replace(/px$/, ''))	
 	
-	if (deviceIsMobile) {
+//	if (deviceIsMobile) {
 	glicPos = xyStart.changedTouches[0]
 	const x = Math.trunc(glicPos.clientX)
 	const y = Math.trunc(glicPos.clientY)
@@ -222,7 +222,7 @@ function glicDown(xyStart) {
 	//glicY = Math.trunc(scale(y,314,cw,1,120))
 		  
 	//document.getElementById('debug').innerText='start X '+Math.trunc(glicPos.clientX)+' Y '+Math.trunc(glicPos.clientY)+' icon area width '+cw+ ' height '+ch+' lemoW '+lemoW
-	}
+//	}
 	//prevent default
 	xyStart.preventDefault();	
 };
@@ -230,7 +230,7 @@ function glicDown(xyStart) {
 function glicMove(xyMove) {
 	const cw = parseInt(document.getElementById('IconArea').style.width.replace(/px$/, ''))
 	if (glicDrag==true) {
-		if (!deviceIsMobile) {
+//		if (!deviceIsMobile) {
 			//device is not mobile		
 			const X=xyMove.offsetX
 			const Y=xyMove.offsetY
@@ -244,10 +244,10 @@ function glicMove(xyMove) {
 	//document.getElementById('debug').innerText='move X '+Math.trunc(client.clientX)+' Y '+Math.trunc(client.clientY)
   	//document.getElementById('debug').innerText='move '
   	
-  	}else{
+//  	}else{
   	//device is mobile
-	glicPos = xyMove.changedTouches[0]
-	}
+//	glicPos = xyMove.changedTouches[0]
+	//}
 }
 	//prevent default
   	xyMove.preventDefault();	
@@ -260,10 +260,10 @@ function glicUp(xyEnd) {
 	//garlicReBuild()
 	//document.getElementById('debug').innerText='end '
 	
-	if (deviceIsMobile) {
+//	if (deviceIsMobile) {
 		//test end
-	glicPos = xyEnd.changedTouches[0]
-	}
+//	glicPos = xyEnd.changedTouches[0]
+//	}
 	 
 	//document.getElementById('debug').innerText='end X '+Math.trunc(glicPos.clientX)+' Y '+Math.trunc(glicPos.clientY)
 	xyEnd.preventDefault();

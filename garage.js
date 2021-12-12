@@ -53,7 +53,7 @@ function garageCleanup() {
 	R2.removeEventListener('click',garage_door_repeat)
 	R3.removeEventListener('click',door_set)
 	co.remove();
-	initNav();	
+	//initNav();	
 };
 
 function door_up() {
@@ -61,7 +61,7 @@ function door_up() {
 		startDoorUp()		
 	}else{
 		var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/200/'+gd_step_speed+'/'+gd_steps_in_one+'/;'
-		websocket.send(allCmnd)
+		appCmndToLemo(allCmnd)
 		R3.style.display='block'
 	}
 };
@@ -70,7 +70,7 @@ function startDoorUp() {
 	var st = gd_steps_in_one * gd_count_downs
 	doorTravel=st
 	var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/200/'+gd_step_speed+'/'+st+'/;'
-	websocket.send(allCmnd)
+	appCmndToLemo(allCmnd)
 	//if in phase 3 then replace with work
 	if (door_set_phase==3) {
 		L1.src='work1.png'
@@ -84,12 +84,12 @@ function startDoorUp() {
 function door_down() {
 	if (door_set_phase==1) {
 		var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/201/'+gd_step_speed+'/'+gd_steps_in_one+'/;'
-		websocket.send(allCmnd)
+		appCmndToLemo(allCmnd)
 	}else if (door_set_phase==3) {
 		startDoorDown()
 	}else if (door_set_phase==2) {
 		var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/201/'+gd_step_speed+'/'+gd_steps_in_one+'/;'
-		websocket.send(allCmnd)
+		appCmndToLemo(allCmnd)
 		R3.style.display='block'
 		gd_count_downs=gd_count_downs+1
 		R1.src='work1.png'
@@ -100,7 +100,7 @@ function door_down() {
 function startDoorDown() {
 	var st = gd_steps_in_one * gd_count_downs
 	var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/201/'+gd_step_speed+'/'+st+'/;'
-	websocket.send(allCmnd)
+	appCmndToLemo(allCmnd)
 	R1.style.display='block'
 	L1.style.display='none'
 	R2.style.display='block'
@@ -144,7 +144,7 @@ function garage_door_respons_handler(respons) {
 					//if (R1.style.display=='block') {
 					if (R1.src.includes('/door_down.png')) {
 						var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/200/'+gd_step_speed+'/'+doorTravel+'/;'
-						websocket.send(allCmnd)
+						appCmndToLemo(allCmnd)
 						//R1.style.display='none'
 						//L1.style.display='block'
 						R1.src='space.png'
@@ -152,7 +152,7 @@ function garage_door_respons_handler(respons) {
 						L1.style.display='block'
 					}else{
 						var allCmnd = ':'+deviceSelected+'/'+currentPlay+'/201/'+gd_step_speed+'/'+doorTravel+'/;'
-						websocket.send(allCmnd)
+						appCmndToLemo(allCmnd)
 						//R1.style.display='block'
 						//L1.style.display='none'
 						L1.src='space.png'

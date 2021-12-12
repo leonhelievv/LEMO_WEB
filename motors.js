@@ -7,7 +7,8 @@
   	const S1m = document.getElementById('S1');
   	const S2m = document.getElementById('S2'); 		
     //init the motor buttons
-    FAm.addEventListener('click',FA);
+    //FAm.addEventListener('click',FA);
+    FAm.addEventListener('touchstart',FA,{passive: true})
     FBm.addEventListener('click',FB);
     S1m.addEventListener('click',S1);
     S2m.addEventListener('click',S2);
@@ -72,23 +73,34 @@ function motorHandler(motor,FvoiceCmnd,click) {
 		spinMotorHandler(deviceSelected)
 		//voice cmnd
 		if (FvoiceCmnd!=true){spinSpeak(helpVoice)};
+	}else if (currentPlay == 'LEMO just step') {
+		justStepMotorHandler(deviceSelected)		
 	}
 	
 	//get the status of motors' if it was a click
-	if (click) {
-		websocket.send(':'+deviceSelected+'/'+currentPlay+'/'+300+'/;');	 
-	}
+//	if (click) {
+//		appCmndToLemo(':'+deviceSelected+'/'+currentPlay+'/'+300+'/;');
+//		awaitRespons = true;
+//	}
 };
 
 function free_F_motors(owner) {
-	websocket.send(':FA/'+owner+'/399/;');
-	websocket.send(':FB/'+owner+'/399/;');
+	appCmndToLemo(':FA/'+owner+'/399/;');
+	appCmndToLemo(':FB/'+owner+'/399/;');
 };
 
 function free_S_motors(owner) {
-	websocket.send(':S1/'+owner+'/399/;');
-	websocket.send(':S2/'+owner+'/399/;');
+	appCmndToLemo(':S1/'+owner+'/399/;');
+	appCmndToLemo(':S2/'+owner+'/399/;');
 };
+
+function free_SBnR(owner) {
+	appCmndToLemo(':SB1R/'+owner+'/399/;');
+	appCmndToLemo(':SB2R/'+owner+'/399/;');
+	appCmndToLemo(':SB1F/'+owner+'/399/;');
+	appCmndToLemo(':SB2F/'+owner+'/399/;');
+};
+
 
 function motorsDisplay(instruct) {
 	switch(instruct) {
