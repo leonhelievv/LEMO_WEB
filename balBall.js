@@ -141,5 +141,5 @@ function balance_ball_do_P4() {
 function step_motor_1(clkw,speed,revs) {
 	var cm =(clkw==true) ? '/201/':'/200/';
 	var allCmnd = ':'+deviceSelected+'/'+currentPlay+cm+speed+'/'+revs+'/;'
-	websocket.send(allCmnd)
+	appCmndToLemo(allCmnd)
 };
