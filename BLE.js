@@ -71,7 +71,8 @@ function requestBluetoothDevice() {
   return navigator.bluetooth.requestDevice({  
    //filters: [{services: [service_uuid]}],
    filters: [{name: 'LEMO nov21 18:45'}],
-      optionalServices: ['beb5483e-36e1-4688-b7f5-ea07361b26a8']
+      //optionalServices: ['beb5483e-36e1-4688-b7f5-ea07361b26a8']
+      optionalServices: ['4fafc201-1fb5-459e-8fcc-c5c9c331914b']
   }).
       then(device => {
         console.log('"' + device.name + '" bluetooth device selected');
