@@ -50,8 +50,8 @@ function BLE_setup() {
 	//alert("at BLE setUp")
 	connect().then(function() {
   		console.log("device is connected");
-  		//dBug.innerText = "device is connected";
-  		//cleanupBLE();
+  		dBug.innerText = "device is connected";
+  		cleanupBLE();
 	});
 };
 
@@ -71,7 +71,7 @@ function requestBluetoothDevice() {
   return navigator.bluetooth.requestDevice({  
    //filters: [{services: [service_uuid]}],
    filters: [{name: 'LEMO nov21 18:45'}],
-      
+      optionalServices: ['beb5483e-36e1-4688-b7f5-ea07361b26a8']
   }).
       then(device => {
         console.log('"' + device.name + '" bluetooth device selected');
