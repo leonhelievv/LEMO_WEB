@@ -2,6 +2,8 @@ const service_uuid = "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 const characteristic_uuid_RX = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 const characteristic_uuid_TX = "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 
+const dBug = document.getElementById('dBug');
+
 // Characteristic object cache
 let characteristicCache = null;
 // Selected device object cache
@@ -26,12 +28,30 @@ let newAppCmnd = 'none';
 let txMitterFree = true;
 // Get references to UI elements
 
+async function findMyLemo() {
+  try {
+    console.log('Requesting any Bluetooth device...');
+    document.getElementById('dBug').innerHTML = 'Requesting any Bluetooth device...'
+    const device = await navigator.bluetooth.requestDevice({
+     // filters: [...] <- Prefer filters to save energy & show relevant devices.
+        acceptAllDevices: true});
+    //console.log('> Requested ' + device.name);
+    document.getElementById('dBug').innerHTML = '> Requested ' + device.name
+    await device.watchAdvertisements;
+    BLE_setup()
+  } catch(error) {
+    console.log('Argh! ' + error);
+    document.getElementById('dBug').innerHTML = 'ERROR ! ' + error;
+  }
+}
+
 
 function BLE_setup() {
 	//alert("at BLE setUp")
 	connect().then(function() {
   		console.log("device is connected");
-  		cleanupBLE();
+  		//dBug.innerText = "device is connected";
+  		//cleanupBLE();
 	});
 };
 
@@ -40,8 +60,67 @@ function connect() {
 	return (deviceCache ? Promise.resolve(deviceCache) :
       requestBluetoothDevice()).
       then(device => connectDeviceAndCacheCharacteristic(device)).
-      catch(error => console.log('connect Error !! '+error))    
+      //catch(error => console.log('connect Error !! '+error))    
+      catch(error => document.getElementById('dBug').innerHTML = 'connect Error !! '+error)    
 }
+
+function requestBluetoothDevice() {
+  console.log('Requesting bluetooth device...');
+  document.getElementById('dBug').innerHTML = 'Requesting bluetooth device...';
+  
+  return navigator.bluetooth.requestDevice({  
+   //filters: [{services: [service_uuid]}],
+   filters: [{name: 'LEMO nov21 18:45'}],
+      
+  }).
+      then(device => {
+        console.log('"' + device.name + '" bluetooth device selected');
+        document.getElementById('dBug').innerHTML = '"' + device.name + '" bluetooth device selected';
+        deviceCache = device;
+        // Added line
+        deviceCache.addEventListener('gattserverdisconnected',handleDisconnection);
+        return deviceCache;
+//      });
+      }).
+      catch(error => document.getElementById('dBug').innerHTML = 'connect Error !! '+error)   
+}
+
+// Connect to the device specified, get service and characteristic
+function connectDeviceAndCacheCharacteristic(device) {
+	
+	if (device.gatt.connected && characteristicCache) {
+  	//there is a client connected and there is a characteristicCache
+    	return Promise.resolve(characteristicCache);
+ 	}
+
+  console.log('try to Connecting to GATT server...')
+  document.getElementById('dBug').innerHTML = 'try to Connecting to GATT server...'
+  return device.gatt.connect().
+      then(server => {
+        console.log('GATT server connected, getting service...');
+        document.getElementById('dBug').innerHTML = 'GATT server connected, getting service...'
+        //return server.getPrimaryService(service2_uuid);
+        return server.getPrimaryService(service_uuid);
+      }).
+      then(service => {
+        console.log('Service found, getting characteristic...');
+        document.getElementById('dBug').innerHTML = 'Service found, getting characteristic...'
+        //const Characteristic = service.getCharacteristic(characteristic2_uuid);
+        const Characteristic = service.getCharacteristic(characteristic_uuid_RX);
+        
+        return Characteristic
+      }).
+      then(characteristic => {
+        console.log('Characteristic found' + characteristic);       
+        document.getElementById('dBug').innerHTML = 'Characteristic found '+ characteristic
+        characteristicCache = characteristic;
+        //set event handler
+        characteristicCache.addEventListener('characteristicvaluechanged',resultFromRead);       
+        //characteristicCache.addEventListener('characteristicvaluechanged',valueChanged);       
+        return characteristicCache;
+      });
+};
+
 
 //do disconnect when lemo window close ??? - i think it is automatic
 function disconnect() {
@@ -77,6 +156,7 @@ function appCmndToLemo(appCmnd) {
 	}else {
 		//busy sending cmnd
 		console.log('Error still busy sending a cmnd !!!! ');
+		document.getElementById('dBug').innerHTML = 'Error still busy sending a cmnd !!!! '
 	}
 };
 
@@ -93,6 +173,7 @@ function bleTransmit(data) {
       	}
 			if (txMitterFree == true){
       		console.log('accessing the device to send: '+data);
+      		document.getElementById('dBug').innerHTML = 'accessing the device to send: '+data
       		txMitterFree = false;
       		//awaitTxResolve = true;
       		//return characteristicCache.writeValue(buffer)//.then(function() {
@@ -102,65 +183,19 @@ function bleTransmit(data) {
 				})
 			}else {
 				console.log('error txMitter is not free');
+				document.getElementById('dBug').innerHTML = 'error txMitter is not free'
 			}
       }else{
       	//the lemo is not connected
       	console.log('the lemo is not connected');
+      	document.getElementById('dBug').innerHTML = 'the lemo is not connected'
       }
    }else{
    	console.log('cant send - no lemo')
+   	document.getElementById('dBug').innerHTML = 'cant send - no lemo'
    }
  };
  
- 
-		
-async function onWatchAdvertisementsButtonClick1() {
-  try {
-    console.log('Requesting any Bluetooth device...');
-    const device = await navigator.bluetooth.requestDevice({
-     // filters: [...] <- Prefer filters to save energy & show relevant devices.
-        acceptAllDevices: true});
-
-    console.log('> Requested ' + device.name);
-
-    device.addEventListener('advertisementreceived', (event) => {
-      console.log('Advertisement received.');
-      console.log('  Device Name: ' + event.device.name);
-      console.log('  Device ID: ' + event.device.id);
-      console.log('  RSSI: ' + event.rssi);
-      console.log('  TX Power: ' + event.txPower);
-      console.log('  UUIDs: ' + event.uuids);
-      event.manufacturerData.forEach((valueDataView, key) => {
-        logDataView('Manufacturer', key, valueDataView);
-        
-      });
-      event.serviceData.forEach((valueDataView, key) => {
-        logDataView('Service', key, valueDataView);
-      });
-    });
-    
-    console.log('Watching advertisements from "' + device.name + '"...');
-    await device.watchAdvertisements();
-    BLE_setup()
-  } catch(error) {
-    console.log('Argh! ' + error);
-  }
-}
-
-async function findMyLemo() {
-  try {
-    console.log('Requesting any Bluetooth device...');
-    const device = await navigator.bluetooth.requestDevice({
-     // filters: [...] <- Prefer filters to save energy & show relevant devices.
-        acceptAllDevices: true});
-    console.log('> Requested ' + device.name);
-    await device.watchAdvertisements;
-    BLE_setup()
-  } catch(error) {
-    console.log('Argh! ' + error);
-  }
-}
-
 
 const logDataView = (labelOfDataSource, key, valueDataView) => {
   const hexString = [...new Uint8Array(valueDataView.buffer)].map(b => {
@@ -174,24 +209,6 @@ const logDataView = (labelOfDataSource, key, valueDataView) => {
 };
 
 
- 
-function requestBluetoothDevice() {
-  console.log('Requesting bluetooth device...');
-  
-  return navigator.bluetooth.requestDevice({  
-   filters: [{services: [service_uuid]}],
-   //acceptAllDevices: true
-  }).
-      then(device => {
-        console.log('"' + device.name + '" bluetooth device selected');
-        deviceCache = device;
-        // Added line
-        deviceCache.addEventListener('gattserverdisconnected',handleDisconnection);
-        return deviceCache;
-      });
-}
-
-
 function handleDisconnection(event) {
   let device = event.target;
   console.log('"' + device.name +'" bluetooth device disconnected, trying to reconnect...');
@@ -201,36 +218,6 @@ function handleDisconnection(event) {
       catch(error => console.log(error));
 } 
  
-// Connect to the device specified, get service and characteristic
-function connectDeviceAndCacheCharacteristic(device) {
-	
-	if (device.gatt.connected && characteristicCache) {
-  	//there is a client connected and there is a characteristicCache
-    	return Promise.resolve(characteristicCache);
- 	}
-
-  console.log('try to Connecting to GATT server...')
-  return device.gatt.connect().
-      then(server => {
-        console.log('GATT server connected, getting service...');
-        //return server.getPrimaryService(service2_uuid);
-        return server.getPrimaryService(service_uuid);
-      }).
-      then(service => {
-        console.log('Service found, getting characteristic...');
-        //const Characteristic = service.getCharacteristic(characteristic2_uuid);
-        const Characteristic = service.getCharacteristic(characteristic_uuid_RX);
-        return Characteristic
-      }).
-      then(characteristic => {
-        console.log('Characteristic found');
-        characteristicCache = characteristic;
-        //set event handler
-        characteristicCache.addEventListener('characteristicvaluechanged',resultFromRead);       
-        //characteristicCache.addEventListener('characteristicvaluechanged',valueChanged);       
-        return characteristicCache;
-      });
-};
 
 // Enable the characteristic changes notification
 function startNotifications(characteristic) {
